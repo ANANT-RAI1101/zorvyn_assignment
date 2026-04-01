@@ -1,8 +1,9 @@
 const { Record } = require('../models/index');
 
-const AppError = require("../utils/App-error");
-const ValidationError = require("../utils/validation-error")
+const AppError = require("../helper/app-error");
+const ValidationError = require("../helper/validation-error")
 const { StatusCodes } = require('http-status-codes')
+const { Op, fn, col, literal } = require('sequelize');
 
 // Creating records
 // Viewing records
@@ -42,10 +43,11 @@ class RecordRepository {
             );
         }
     }
-    async getByFilters(filters) {
+    async getByFilters(filters, options = {}) {
         try {
             const response = await Record.findAll({
-                where: filters
+                where: filters,
+                ...options
             });
 
             return response;
@@ -100,6 +102,36 @@ class RecordRepository {
                 "App Error",
                 "Failed to delete record",
                 "An error occurred while deleting the record",
+                StatusCodes.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    async getMonthlySummary(year) {
+        try {
+            // did the grouping and summing through sequlize
+            return await Record.findAll({
+                attributes: [
+                    [fn('MONTH', col('date')), 'month'],
+                    [fn('SUM', literal(`CASE WHEN type='income' THEN amount ELSE 0 END`)), 'totalIncome'],
+                    [fn('SUM', literal(`CASE WHEN type='expense' THEN amount ELSE 0 END`)), 'totalExpense']
+                ],
+                where: {
+                    date: {
+                        [Op.between]: [new Date(`${year}-01-01`), new Date(`${year}-12-31`)]
+                    }
+                },
+                group: [fn('MONTH', col('date'))],
+                order: [[fn('MONTH', col('date')), 'ASC']]
+            });
+        } catch (error) {
+            if (error.name === "SequelizeValidationError") {
+                throw new ValidationError(error);
+            }
+            throw new AppError(
+                "App Error",
+                "Failed to get monthly summary",
+                "An error occurred while fetching the monthly summary",
                 StatusCodes.INTERNAL_SERVER_ERROR
             );
         }
