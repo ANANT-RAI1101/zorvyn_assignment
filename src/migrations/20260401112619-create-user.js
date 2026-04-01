@@ -11,7 +11,7 @@ module.exports = {
       },
 
       email: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         unique: true,
         validate: {
@@ -20,7 +20,7 @@ module.exports = {
       },
 
       password: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
           len: [8, 100]
