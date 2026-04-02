@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM("active", "inactive"),
       allowNull: false
     }
+    
   }, {
     sequelize,
     modelName: 'User',

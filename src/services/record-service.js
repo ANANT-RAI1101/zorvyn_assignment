@@ -1,4 +1,5 @@
 const RecordRepository = require('../repository/record-repository');
+const UserRepository = require('../repository/auth-repository');
 const AppError = require('../helper/app-error');
 const ServiceError = require('../helper/service-error');
 const { StatusCodes } = require('http-status-codes');
@@ -8,6 +9,7 @@ const { Op } = require("sequelize");
 class RecordService {
     constructor() {
         this.recordRepository = new RecordRepository();
+        this.userRepository = new UserRepository();
     }
 
     async createRecord(data) {
