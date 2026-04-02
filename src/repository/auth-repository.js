@@ -3,8 +3,9 @@
  * 2.login user->{hash password check and jwt generation}
  */
 
-const { User } = require("../models");
-const { AppError } = require("../helper/app-error");
+const { User } = require("../models/index");
+const AppError  = require("../helper/app-error");
+const ValidationError = require("../helper/validation-error");
 const { StatusCodes } = require('http-status-codes');
 
 class AuthRepository {

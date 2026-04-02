@@ -2,6 +2,8 @@ const AuthRepository = require("../repository/auth-repository.js");
 const AppError = require("../helper/app-error.js");
 const ServiceError = require("../helper/service-error.js");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { JWT_KEY } = require("../config/server-config.js");
 const { StatusCodes } = require("http-status-codes");
 
 class AuthService {
@@ -16,7 +18,8 @@ class AuthService {
              */
             const userData = {
                 ...data,
-                role: "viewers"
+                role: "viewer",
+                status: "active"
             };
             const user = await this.authRepository.createUser(userData);
             return user;

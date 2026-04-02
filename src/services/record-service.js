@@ -3,7 +3,7 @@ const AppError = require('../helper/app-error');
 const ServiceError = require('../helper/service-error');
 const { StatusCodes } = require('http-status-codes');
 const { Op } = require("sequelize");
-const user = require('../models/user');
+
 
 class RecordService {
     constructor() {

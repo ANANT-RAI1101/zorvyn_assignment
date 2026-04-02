@@ -12,9 +12,12 @@
 
 const express=require("express")
 const RecordController=require("../../controllers/record-controller.js")
+const AuthController=require("../../controllers/auth-controller.js")
 const Route=express.Router();
 
 const recordController=new RecordController();
+const authController=new AuthController();
+
 // middlewares for authentication and validation are yet to be added 
 Route.post("/createRecord",recordController.createRecord);
 Route.get("/getRecords/:id",recordController.getRecords);
@@ -27,5 +30,16 @@ Route.get("/net-balance/:userId",recordController.getNetBalance);
 Route.get("/expense-by-category/:category/:userId",recordController.getExpenseByCategory);
 Route.get("/recent-activity/:userId",recordController.recentActivity);
 Route.get("/monthly-summary/:year/:userId",recordController.monthlySummary);
+
+// Auth routes
+
+Route.post("/signup",authController.signUp);
+Route.post("/login",authController.login);
+Route.get("/getUserById/:id",authController.getUserById);
+Route.get("/getUserByEmail",authController.getUserByEmail);
+Route.patch("/updateUser/:id",authController.updateUser);
+Route.delete("/deleteUser/:id",authController.deleteUser);
+Route.patch("/changeUserRole/:id",authController.changeUserRole);
+
 
 module.exports=Route;

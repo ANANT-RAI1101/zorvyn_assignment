@@ -4,7 +4,7 @@ const AppError = require("../helper/app-error");
 const ValidationError = require("../helper/validation-error")
 const { StatusCodes } = require('http-status-codes')
 const { Op, fn, col, literal } = require('sequelize');
-const user = require('../models/user');
+
 
 // Creating records
 // Viewing records
