@@ -138,7 +138,7 @@ class RecordController {
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Total expense fetched successfully",
-                data: totalExpense.totalExpense,
+                data: totalExpense.totalexpense,
                 err: {}
             })
         } catch (error) {
