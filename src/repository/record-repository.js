@@ -4,6 +4,7 @@ const AppError = require("../helper/app-error");
 const ValidationError = require("../helper/validation-error")
 const { StatusCodes } = require('http-status-codes')
 const { Op, fn, col, literal } = require('sequelize');
+const user = require('../models/user');
 
 // Creating records
 // Viewing records
@@ -47,9 +48,8 @@ class RecordRepository {
         try {
             const response = await Record.findAll({
                 where: filters,
-                ...options
+                ...options,
             });
-
             return response;
         } catch (error) {
             if (error.name === "SequelizeValidationError") {
@@ -69,9 +69,10 @@ class RecordRepository {
         try {
             const response = await Record.update(data, {
                 where: {
-                    recordId: recordId
+                    id: recordId
                 }
             });
+            console.log(response);
             return response;
         } catch (error) {
             if (error.name === "SequelizeValidationError") {
@@ -107,7 +108,7 @@ class RecordRepository {
         }
     }
 
-    async getMonthlySummary(year) {
+    async getMonthlySummary(year,userId) {
         try {
             // did the grouping and summing through sequlize
             return await Record.findAll({
@@ -117,6 +118,7 @@ class RecordRepository {
                     [fn('SUM', literal(`CASE WHEN type='expense' THEN amount ELSE 0 END`)), 'totalExpense']
                 ],
                 where: {
+                    userId: userId,
                     date: {
                         [Op.between]: [new Date(`${year}-01-01`), new Date(`${year}-12-31`)]
                     }

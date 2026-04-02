@@ -3,6 +3,7 @@ const AppError = require('../helper/app-error');
 const ServiceError = require('../helper/service-error');
 const { StatusCodes } = require('http-status-codes');
 const { Op } = require("sequelize");
+const user = require('../models/user');
 
 class RecordService {
     constructor() {
@@ -11,7 +12,17 @@ class RecordService {
 
     async createRecord(data) {
         try {
-            const record = await this.recordRepository.createRecord(data);
+            const User = await this.userRepository.getUserById(data.userId);
+            if (!User) {
+                throw new AppError(
+                    "User Not Found",
+                    "User not found",
+                    "The specified user does not exist",
+                    StatusCodes.NOT_FOUND
+                );
+            }
+
+            const record = await User.createRecord(data);
             return record;
         } catch (error) {
             if (error.name == "SequelizeValidationError" || error.name == "Repository Error") {
@@ -68,7 +79,6 @@ class RecordService {
                     [Op.between]: [filters.startDate, filters.endDate]
                 };
             }
-
             const records = await this.recordRepository.getByFilters(filter, options);
             if (records.length === 0 && page > 1) {
                 throw new AppError({
@@ -123,17 +133,17 @@ class RecordService {
         }
     }
 
-    async getTotalIncomeAndExpense() {
+    async getTotalIncomeAndExpense(userId) {
         try {
             // for income 
             // it is implemented through js logic instead of sql query
-            const income = await this.recordRepository.getByFilters({ type: "income" });
+            const income = await this.recordRepository.getByFilters({ type: "income", userId });
             const totalIncome = income.reduce((total, record) => {
                 return total + record.amount;
             }, 0)
 
             // for expense
-            const expense = await this.recordRepository.getByFilters({ type: "expense" });
+            const expense = await this.recordRepository.getByFilters({ type: "expense", userId });
             const totalexpense = expense.reduce((total, record) => {
                 return total + record.amount;
             }, 0)
@@ -154,11 +164,12 @@ class RecordService {
         }
     }
 
-    async getTotalExpenseByCategory(category) {
+    async getTotalExpenseByCategory(category, userId) {
         try {
             const filter = {
                 type: "expense",
-                category: category
+                category: category,
+                userId: userId
             };
             const categoryExpenses = await this.recordRepository.getByFilters(filter)
             const totalCategoryExpense = categoryExpenses.reduce((total, record) => {
@@ -174,14 +185,14 @@ class RecordService {
         }
     }
 
-    async recentActivity() {
+    async recentActivity(userId) {
         try {
             const options = {
                 limit: 5,
                 offset: 0,
                 order: [["date", "DESC"]]
             };
-            const records = await this.recordRepository.getByFilters({}, options);
+            const records = await this.recordRepository.getByFilters({userId}, options);
             return records;
         } catch (error) {
             throw new ServiceError(
@@ -192,9 +203,9 @@ class RecordService {
         }
     }
 
-    async monthlySummary(year) {
+    async monthlySummary(year,userId) {
         try {
-            const monthlyRecords = await this.recordRepository.getMonthlySummary(year);
+            const monthlyRecords = await this.recordRepository.getMonthlySummary(year,userId);
             const trends = monthlyRecords.map(record => ({
                 month: monthNames[record.get('month') - 1],
                 totalIncome: parseFloat(record.get('totalIncome') || 0),
@@ -212,3 +223,5 @@ class RecordService {
     }
 
 }
+
+module.exports = RecordService;

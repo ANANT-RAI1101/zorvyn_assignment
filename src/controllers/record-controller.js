@@ -28,7 +28,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -47,7 +47,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -66,7 +66,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -85,7 +85,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -104,7 +104,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -115,7 +115,7 @@ class RecordController {
 
     async getTotalIncome(req, res) {
         try {
-            const totalIncome = await recordService.getTotalIncomeAndExpense();
+            const totalIncome = await recordService.getTotalIncomeAndExpense(req.params.userId);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Total income and expense fetched successfully",
@@ -123,7 +123,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -134,7 +134,7 @@ class RecordController {
 
     async getTotalExpense(req, res) {
         try {
-            const totalExpense = await recordService.getTotalIncomeAndExpense();
+            const totalExpense = await recordService.getTotalIncomeAndExpense(req.params.userId);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Total expense fetched successfully",
@@ -142,7 +142,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -153,7 +153,7 @@ class RecordController {
 
     async getNetBalance(req, res) {
         try {
-            const netBalance = await recordService.getTotalIncomeAndExpense();
+            const netBalance = await recordService.getTotalIncomeAndExpense(req.params.userId);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Net balance fetched successfully",
@@ -161,7 +161,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -172,7 +172,7 @@ class RecordController {
 
     async getExpenseByCategory(req, res) {
         try {
-            const balance = await recordService.getTotalExpenseByCategory(req.params.category);
+            const balance = await recordService.getTotalExpenseByCategory(req.params.category,req.params.userId);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Total expense by category fetched successfully",
@@ -180,7 +180,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -191,7 +191,7 @@ class RecordController {
 
     async recentActivity(req, res) {
         try {
-            const records = await recordService.recentActivity();
+            const records = await recordService.recentActivity(req.params.userId);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Recent activity fetched successfully",
@@ -199,7 +199,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -210,7 +210,7 @@ class RecordController {
 
     async monthlySummary(req, res) {
         try {
-            const summary = await recordService.monthlySummary(req.params.year);
+            const summary = await recordService.monthlySummary(req.params.year, req.params.userId);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Monthly summary fetched successfully",
@@ -218,7 +218,7 @@ class RecordController {
                 err: {}
             })
         } catch (error) {
-            return res.status(error.statusCodes).json({
+            return res.status(error.statusCode).json({
                 success: false,
                 message: error.message,
                 data: {},
@@ -229,3 +229,4 @@ class RecordController {
 }
 
 module.exports = RecordController;
+
