@@ -2,6 +2,8 @@
  * all routes like creation and login signup and all params , query , body needs to be validated  requires input validation
  */
 
+const { StatusCodes } = require('http-status-codes');
+
 const validateUserSignUpInput = (req, res, next) => {
     if (!req.body.email || !req.body.password) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -187,15 +189,10 @@ const validateMontlySummaryInput = (req, res, next) => {
 }
 
 
-function verifyToken(token) {
-    try {
-        const response = jwt.verify(token, JWT_KEY);
-        return response;
-    } catch (error) {
-        throw new ServiceError(
-            error.message,
-            error.explanation,
-            error.statusCode
-        )
-    }
+module.exports = {
+    validateUserSignUpInput,
+    validateUserLoginInput,
+    validateParams,
+    validateUpdateRecordInput,
+    validateMontlySummaryInput
 }
