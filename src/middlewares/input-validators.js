@@ -61,7 +61,7 @@ const validateUserLoginInput = (req, res, next) => {
 }
 
 const validateRecordInput = (req, res, next) => {
-    if (!req.body.amount || !req.body.category || !req.body.date || !req.body.userId || !req.body.type) {
+    if (!req.body.amount || !req.body.category || !req.body.date || !req.body.type) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             message: "something went wrong",
             err: "amount or category or date or userId or type is missing",
@@ -94,6 +94,32 @@ const validateRecordInput = (req, res, next) => {
     next();
 }
 
+const validateFiltersInput = (req, res, next) => {
+    if (req.body.amount <= 0) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "Invalid amount",
+            err: "Amount must be greater than zero",
+            success: false,
+        });
+    }
+    if (req.body.type !== "income" && req.body.type !== "expense") {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "Invalid type",
+            err: "Type must be either 'income' or 'expense'",
+            success: false,
+        });
+    }
+
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(req.body.startDate) || !dateRegex.test(req.body.endDate)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "Invalid date format",
+            err: "Date must be in the format 'YYYY-MM-DD'",
+            success: false,
+        });
+    }
+}
+
 const validateParams = (req, res, next) => {
     if (!req.params.id) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -111,6 +137,39 @@ const validateParams = (req, res, next) => {
     }
 
     next();
+}
+
+const validateEmail = (req, res, next) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(req.body.email)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "Invalid email format",
+            err: "Email validation failed",
+            success: false,
+        });
+    }
+    next();
+}
+
+
+const validateExpenseByCategoryParams = (req, res, next) => {
+    const { category, userId } = req.params;
+    if (!category || !userId) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "something went wrong",
+            err: "category or userId is missing",
+            success: false,
+        });
+    }
+    if (Number.isNaN(userId)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "Invalid userId format",
+            err: "userId must be a number",
+            success: false,
+        });
+    }
+    next();
+
 }
 
 const validateUpdateRecordInput = (req, res, next) => {
@@ -178,7 +237,7 @@ const validateMontlySummaryInput = (req, res, next) => {
             success: false,
         });
     }
-    if (Number.isNaN(year) ) {
+    if (Number.isNaN(year)) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             message: "Invalid year format",
             err: "year must be a number",
@@ -194,5 +253,9 @@ module.exports = {
     validateUserLoginInput,
     validateParams,
     validateUpdateRecordInput,
-    validateMontlySummaryInput
+    validateMontlySummaryInput,
+    validateRecordInput,
+    validateFiltersInput,
+    validateExpenseByCategoryParams,
+    validateEmail
 }

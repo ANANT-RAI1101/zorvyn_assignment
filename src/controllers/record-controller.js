@@ -20,7 +20,8 @@ class RecordController {
 
     async createRecord(req, res) {
         try {
-            const record = await recordService.createRecord(req.body);
+            const data= { ...req.body, userId: req.user.id };
+            const record = await recordService.createRecord(data);
             return res.status(StatusCodes.CREATED).json({
                 success: true,
                 message: "Record created successfully",
@@ -58,7 +59,8 @@ class RecordController {
 
     async getByFilters(req, res) {
         try {
-            const records = await recordService.getByFilters(req.query);
+            const filters = { ...req.query, userId: req.user.id };
+            const records = await recordService.getByFilters(filters);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Records fetched successfully",
@@ -172,7 +174,7 @@ class RecordController {
 
     async getExpenseByCategory(req, res) {
         try {
-            const balance = await recordService.getTotalExpenseByCategory(req.params.category,req.params.userId);
+            const balance = await recordService.getTotalExpenseByCategory(req.params.category, req.params.userId);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Total expense by category fetched successfully",

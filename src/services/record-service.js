@@ -68,6 +68,10 @@ class RecordService {
                 order: [["date", "DESC"]]
             };
             const filter = {};
+            if (filters.userId) {
+                filter.userId = filters.userId;
+            }
+            
             if (filters.type) {
                 filter.type = filters.type;
             }
@@ -194,7 +198,7 @@ class RecordService {
                 offset: 0,
                 order: [["date", "DESC"]]
             };
-            const records = await this.recordRepository.getByFilters({userId}, options);
+            const records = await this.recordRepository.getByFilters({ userId }, options);
             return records;
         } catch (error) {
             throw new ServiceError(
@@ -205,9 +209,9 @@ class RecordService {
         }
     }
 
-    async monthlySummary(year,userId) {
+    async monthlySummary(year, userId) {
         try {
-            const monthlyRecords = await this.recordRepository.getMonthlySummary(year,userId);
+            const monthlyRecords = await this.recordRepository.getMonthlySummary(year, userId);
             const trends = monthlyRecords.map(record => ({
                 month: monthNames[record.get('month') - 1],
                 totalIncome: parseFloat(record.get('totalIncome') || 0),
