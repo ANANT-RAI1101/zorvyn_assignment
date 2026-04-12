@@ -1,4 +1,4 @@
-# Zorvyn Assignment
+# Finance Dashboard Backend 
 
 A robust Node.js REST API for managing personal financial records with user authentication, role-based access control, and comprehensive financial analytics.
 
